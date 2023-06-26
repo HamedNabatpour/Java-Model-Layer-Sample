@@ -18,11 +18,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HelloWorldHibernateTest {
 
     private static SessionFactory createSessionFactory(){
+
+        /*To create a SessionFactory, we first need to create a configuration.*/
         Configuration configuration = new Configuration();
+
+        /*We need to call the configure method on it and to add Message to it as an annotated
+        class. The execution of the configure method will load the content of the
+        default hibernate.cfg.xml file.*/
         configuration.configure().addAnnotatedClass(Message.class);
 
+        /*The builder pattern helps us create the immutable service registry and configure it
+        by applying settings with chained method calls. A ServiceRegistry hosts and manages
+        services that need access to the SessionFactory. Services are classes that provide
+        pluggable implementations of different types of functionality to Hibernate*/
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build();
+
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
@@ -43,9 +54,17 @@ public class HelloWorldHibernateTest {
 
             session.beginTransaction();
 
+            /*Create an instance of CriteriaQuery by calling the CriteriaBuilder create-
+            Query() method. A CriteriaBuilder is used to construct criteria queries, compound
+            selections, expressions, predicates, and orderings. A CriteriaQuery defines
+            functionality that is specific to top-level queries. CriteriaBuilder and Criteria-
+             Query belong to the Criteria API, which allows us to build a query programmaticallyCreate an instance of CriteriaQuery by calling the CriteriaBuilder create-
+            Query() method. A CriteriaBuilder is used to construct criteria queries, compound
+            selections, expressions, predicates, and orderings. A CriteriaQuery defines
+            functionality that is specific to top-level queries. CriteriaBuilder and Criteria-
+             Query belong to the Criteria API, which allows us to build a query programmatically*/
             CriteriaQuery<Message>  criteriaQuery = session.getCriteriaBuilder().createQuery(Message.class);
             criteriaQuery.from(Message.class);
-
             List<Message> messages = session.createQuery(criteriaQuery).getResultList();
             session.getTransaction().commit();
 
